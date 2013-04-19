@@ -30,6 +30,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        //TODO No camera, no sd...
+        
         previewCamera = (CapturePreview) findViewById(R.id.previewCamera);
         buttonRec = (Button) findViewById(R.id.buttonRec);
         buttonStop = (Button) findViewById(R.id.buttonStop);
