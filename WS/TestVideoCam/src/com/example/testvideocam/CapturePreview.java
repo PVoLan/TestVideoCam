@@ -95,7 +95,7 @@ public class CapturePreview extends SurfaceView implements
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw.
 
-		manager.createCamera(holder);
+		manager.createCamera(holder, 0);
 
 		onCreated.fire();
 	}

@@ -27,11 +27,11 @@ public class CameraManager
 		super();
 	}
 	
-	public void createCamera(SurfaceHolder holder)
+	public void createCamera(SurfaceHolder holder, int cameraNo)
 	{
 		try
 		{
-			camera = Camera.open();
+			camera = Camera.open(cameraNo);
 			camera.setPreviewDisplay(holder);
 		}
 		catch (Exception exception)
@@ -41,8 +41,10 @@ public class CameraManager
 			camera = null;
 
 			onVideoCaptureError.fire(exception);
-		}
+		}		
 	}
+	
+	
 
 
 
@@ -166,4 +168,6 @@ public class CameraManager
 		if (unlockRequired)
 			camera.unlock();
 	}
+	
+	
 }
