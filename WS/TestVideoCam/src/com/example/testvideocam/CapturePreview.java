@@ -24,8 +24,8 @@ public class CapturePreview extends SurfaceView implements
 
 	public CustomEvent onCreated = new CustomEvent();
 	
-	public ParametrizedCustomEvent<ErrorInfo> onVideoCaptureError = new ParametrizedCustomEvent<CapturePreview.ErrorInfo>();
-	public ParametrizedCustomEvent<ErrorInfo> onVideoCaptureInfo = new ParametrizedCustomEvent<CapturePreview.ErrorInfo>();
+	public ParametrizedCustomEvent<Throwable> onVideoCaptureError = new ParametrizedCustomEvent<Throwable>();
+	public ParametrizedCustomEvent<MediaRecorderInfo> onVideoCaptureInfo = new ParametrizedCustomEvent<MediaRecorderInfo>();
 	public CustomEvent onVideoCaptureStarted = new CustomEvent();
 	public CustomEvent onVideoCaptureStopped = new CustomEvent();
 	
@@ -63,10 +63,7 @@ public class CapturePreview extends SurfaceView implements
 			camera.release();
 			camera = null;
 
-			if (getContext() instanceof Activity) {
-				((Activity) getContext()).setResult(Activity.RESULT_CANCELED);
-				((Activity) getContext()).finish();
-			}
+			onVideoCaptureError.fire(exception);
 		}
 
 		onCreated.fire();
@@ -84,11 +81,7 @@ public class CapturePreview extends SurfaceView implements
 			camera = null;
 		} catch (Exception e) {
 			Trace.Print(e);
-
-			if (getContext() instanceof Activity) {
-				((Activity) getContext()).setResult(Activity.RESULT_CANCELED);
-				((Activity) getContext()).finish();
-			}
+			onVideoCaptureError.fire(e);
 		}
 	}
 
@@ -99,7 +92,7 @@ public class CapturePreview extends SurfaceView implements
 
 		try {
 			Camera.Parameters parameters = camera.getParameters();
-
+			
 			List<Camera.Size> previewSizes = parameters
 					.getSupportedPreviewSizes();
 			Camera.Size max = camera.new Size(0, 0);
@@ -120,18 +113,10 @@ public class CapturePreview extends SurfaceView implements
 			camera.startPreview();
 		} catch (Exception e) {
 			Trace.Print(e);
-
-			if (getContext() instanceof Activity) {
-				((Activity) getContext()).setResult(Activity.RESULT_CANCELED);
-				((Activity) getContext()).finish();
-			}
+			onVideoCaptureError.fire(e);
 		}
 	}
 
-	/*
-	public Camera getCamera() {
-		return mCamera;
-	}*/
 	
 	
 	
@@ -151,8 +136,7 @@ public class CapturePreview extends SurfaceView implements
 			outputFile = MediaFileManager.getOutputVideoFile();
 			if(outputFile == null)
 			{
-				//TODO Error handle - move out of here
-				Toast.makeText(getContext(), "Cannot create output file", Toast.LENGTH_SHORT).show();
+				onVideoCaptureError.fire(new Exception("Cannot create output file"));
 				releaseRecorderResources();
 				return;
 			}
@@ -172,9 +156,8 @@ public class CapturePreview extends SurfaceView implements
 		}
 		catch(Exception ex)
 		{
-			//TODO Error handle - move out of here
 			Trace.Print(ex);
-			Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+			onVideoCaptureError.fire(ex);
 			releaseRecorderResources();
 			return;
 		}
@@ -201,7 +184,7 @@ public class CapturePreview extends SurfaceView implements
 		catch (RuntimeException e) 
 		{
 			if(outputFile != null){
-				//if(outputFile.exists()) outputFile.delete();
+				if(outputFile.exists()) outputFile.delete();
 			}
 		}
 		mediaRecorder.reset();
@@ -212,13 +195,32 @@ public class CapturePreview extends SurfaceView implements
 	
 	
 	
-	public static class ErrorInfo{
+	public static class CaptureException extends Exception{
+		
+		private MediaRecorderInfo info;
+		
+		
+		public CaptureException(MediaRecorder mr, int what, int extra) {
+			super();
+			info = new MediaRecorderInfo(mr, what, extra);
+		}
+
+
+		public MediaRecorderInfo getInfo() {
+			return info;
+		}
+
+	}
+	
+	
+	
+	public static class MediaRecorderInfo {
 		private MediaRecorder mr;
 		private int what;
 		private int extra;
 		
 		
-		public ErrorInfo(MediaRecorder mr, int what, int extra) {
+		public MediaRecorderInfo(MediaRecorder mr, int what, int extra) {
 			super();
 			this.mr = mr;
 			this.what = what;

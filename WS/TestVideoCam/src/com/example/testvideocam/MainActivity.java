@@ -2,10 +2,9 @@ package com.example.testvideocam;
 
 import java.io.IOException;
 
-import com.example.testvideocam.CapturePreview.ErrorInfo;
+import com.example.testvideocam.CapturePreview.*;
 
-import ru.pvolan.event.CustomEventListener;
-import ru.pvolan.event.ParametrizedCustomEventListener;
+import ru.pvolan.event.*;
 
 import android.os.*;
 import android.app.*;
@@ -67,10 +66,10 @@ public class MainActivity extends Activity {
 			}
 		});  
         
-        previewCamera.onVideoCaptureInfo.addListener(new ParametrizedCustomEventListener<CapturePreview.ErrorInfo>() {
+        previewCamera.onVideoCaptureInfo.addListener(new ParametrizedCustomEventListener<MediaRecorderInfo>() {
 			
 			@Override
-			public void onEvent(final ErrorInfo param) {
+			public void onEvent(final MediaRecorderInfo param) {
 				runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
@@ -81,10 +80,10 @@ public class MainActivity extends Activity {
 		});
         
         
-        previewCamera.onVideoCaptureError.addListener(new ParametrizedCustomEventListener<CapturePreview.ErrorInfo>() {
+        previewCamera.onVideoCaptureError.addListener(new ParametrizedCustomEventListener<Throwable>() {
 			
 			@Override
-			public void onEvent(final ErrorInfo param) {
+			public void onEvent(final Throwable param) {
 				runOnUiThread(new Runnable() {					
 					@Override
 					public void run() {
@@ -156,13 +155,23 @@ public class MainActivity extends Activity {
 		
 	}
     
-    protected void onVideoCaptureError(ErrorInfo param) 
+    protected void onVideoCaptureError(Throwable param) 
     {
-    	Toast.makeText(this, String.format("Error: What %d, Extra %", param.getWhat(), param.getExtra()), Toast.LENGTH_SHORT).show();	
+    	
+    	if(param instanceof CaptureException)
+    	{
+    		MediaRecorderInfo info = ((CaptureException)param).getInfo();
+    		Toast.makeText(this, String.format("Error: What %d, Extra %", info.getWhat(), info.getExtra()), Toast.LENGTH_SHORT).show();
+    	}
+    	else
+    	{
+    		Toast.makeText(this, param.getMessage(), Toast.LENGTH_SHORT).show();
+    	}
+    	
 	}
 
 
-	protected void onVideoCaptureInfo(ErrorInfo param) 
+	protected void onVideoCaptureInfo(MediaRecorderInfo param) 
 	{
 		Toast.makeText(this, String.format("Info: What %d, Extra %", param.getWhat(), param.getExtra()), Toast.LENGTH_SHORT).show();		
 	}

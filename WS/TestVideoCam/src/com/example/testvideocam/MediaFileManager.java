@@ -27,8 +27,7 @@ public class MediaFileManager
 		    // Create the storage directory if it does not exist
 		    if (! mediaStorageDir.exists()){
 		        if (! mediaStorageDir.mkdirs()){
-		        	//TODO Error handle - make beautiful
-		            Trace.Print("failed to create video file directory");
+		        	Trace.Print("failed to create video file directory");
 		            return null;
 		        }
 		    }
@@ -45,8 +44,7 @@ public class MediaFileManager
 		}
 		catch (Exception e) 
 		{
-			//TODO Error handle - make beautiful
-			 Trace.Print(e);
+			Trace.Print(e);
 			return null;
 		}
 	}
