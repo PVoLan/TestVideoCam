@@ -32,6 +32,10 @@ public class MainActivity extends Activity {
         
         //TODO No camera, no sd...
         
+        //TODO Async calls?
+        
+        //TODO Front camera exist?
+        
         previewCamera = (CapturePreview) findViewById(R.id.previewCamera);
         buttonRec = (Button) findViewById(R.id.buttonRec);
         buttonStop = (Button) findViewById(R.id.buttonStop);
