@@ -20,7 +20,7 @@ public class MediaFileManager
 		    // using Environment.getExternalStorageState() before doing this.
 	
 		    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-		              Environment.DIRECTORY_PICTURES), subdirname);
+		              Environment.DIRECTORY_MOVIES), subdirname);
 		    // This location works best if you want the created images to be shared
 		    // between applications and persist after your app has been uninstalled.
 	
