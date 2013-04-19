@@ -169,5 +169,8 @@ public class CameraManager
 			camera.unlock();
 	}
 	
-	
+	public int getMaxCameraNo()
+	{
+		return Camera.getNumberOfCameras()-1;		
+	}
 }

@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
 	CapturePreview previewCamera;
 	Button buttonRec;
 	Button buttonStop;
+	Button buttonSwitch;
 
 	//Camera camera;
 	
@@ -39,6 +40,7 @@ public class MainActivity extends Activity {
         previewCamera = (CapturePreview) findViewById(R.id.previewCamera);
         buttonRec = (Button) findViewById(R.id.buttonRec);
         buttonStop = (Button) findViewById(R.id.buttonStop);
+        buttonSwitch = (Button) findViewById(R.id.buttonSwitch);
         
         
         previewCamera.onCreated.addListener(new CustomEventListener() {			
@@ -113,6 +115,13 @@ public class MainActivity extends Activity {
 				onButtonStopClick();
 			}
 		});
+        
+        buttonSwitch.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				onButtonSwitchClick();
+			}
+		});
     }
 
     @Override
@@ -157,8 +166,11 @@ public class MainActivity extends Activity {
     private void onButtonStopClick() 
     {
 		previewCamera.stopVideoCapture();
-		
-		
+	}
+    
+    private void onButtonSwitchClick() 
+    {
+		previewCamera.switchCamera();
 	}
     
     protected void onVideoCaptureError(Throwable param) 

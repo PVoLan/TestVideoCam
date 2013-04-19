@@ -1,18 +1,13 @@
 package com.example.testvideocam;
 
 import java.io.*;
-import java.util.*;
 
 import ru.pvolan.event.*;
 import ru.pvolan.trace.*;
-
-import android.app.*;
 import android.content.*;
-import android.hardware.*;
-import android.media.*;
 import android.util.*;
 import android.view.*;
-import android.widget.Toast;
+import android.widget.*;
 
 public class CapturePreview extends SurfaceView implements
 		SurfaceHolder.Callback
@@ -24,6 +19,8 @@ public class CapturePreview extends SurfaceView implements
 	private SurfaceHolder holder;
 	private int previewWidth = 0;
 	private int previewHeight = 0;
+	private int currentCameraNo = 0;
+	private boolean isRecordingStarted = false;
 
 	// public events
 
@@ -96,6 +93,7 @@ public class CapturePreview extends SurfaceView implements
 		// to draw.
 
 		manager.createCamera(holder, 0);
+		currentCameraNo = 0;
 
 		onCreated.fire();
 	}
@@ -168,6 +166,7 @@ public class CapturePreview extends SurfaceView implements
 			return;
 		}
 
+		isRecordingStarted = true;
 		onVideoCaptureStarted.fire();
 	}
 
@@ -178,11 +177,34 @@ public class CapturePreview extends SurfaceView implements
 		manager.stopRecording();
 		manager.startPreview(true);
 
+		isRecordingStarted = false;
 		onVideoCaptureStopped.fire();
 	}
 
+	
 
-
+	public void switchCamera()
+	{
+		if(isRecordingStarted) return; //TODO
+		
+		currentCameraNo++;
+		if(currentCameraNo > manager.getMaxCameraNo())
+		{
+			currentCameraNo++;
+		}
+		
+		if(isRecordingStarted)
+		{
+			
+		}
+		else
+		{
+			manager.stopPreview(false);
+			manager.destroyCamera();
+			manager.createCamera(holder, currentCameraNo);
+			manager.startPreview(false);
+		}
+	}
 	
 
 
