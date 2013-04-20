@@ -1,18 +1,13 @@
 package com.example.testvideocam;
 
 import java.io.*;
-import java.util.*;
 
 import ru.pvolan.event.*;
 import ru.pvolan.trace.*;
-
-import android.app.*;
 import android.content.*;
-import android.hardware.*;
-import android.media.*;
 import android.util.*;
 import android.view.*;
-import android.widget.Toast;
+import android.widget.*;
 
 public class CapturePreview extends SurfaceView implements
 		SurfaceHolder.Callback
@@ -22,8 +17,7 @@ public class CapturePreview extends SurfaceView implements
 	private CameraManager manager;
 	
 	private SurfaceHolder holder;
-	private int previewWidth = 0;
-	private int previewHeight = 0;
+	private boolean isRecordingStarted = false;
 
 	// public events
 
@@ -95,7 +89,7 @@ public class CapturePreview extends SurfaceView implements
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw.
 
-		manager.createCamera(holder, 0);
+		manager.createCameras(holder);
 
 		onCreated.fire();
 	}
@@ -110,7 +104,7 @@ public class CapturePreview extends SurfaceView implements
 		// important to release it when the activity is paused.
 		try
 		{
-			manager.destroyCamera();
+			manager.destroyCameras();
 		}
 		catch (Exception e)
 		{
@@ -130,9 +124,7 @@ public class CapturePreview extends SurfaceView implements
 		try
 		{
 			manager.stopPreview(false);
-			previewWidth = w;
-			previewHeight = h;
-			manager.updateCameraSizeApproximately(previewWidth, previewHeight);
+			manager.updateCameraSizeApproximately(w, h);
 			manager.startPreview(false);
 		}
 		catch (Exception e)
@@ -168,6 +160,7 @@ public class CapturePreview extends SurfaceView implements
 			return;
 		}
 
+		isRecordingStarted = true;
 		onVideoCaptureStarted.fire();
 	}
 
@@ -178,11 +171,52 @@ public class CapturePreview extends SurfaceView implements
 		manager.stopRecording();
 		manager.startPreview(true);
 
+		isRecordingStarted = false;
 		onVideoCaptureStopped.fire();
+	}
+
+	
+
+	public void switchCamera()
+	{
+		
+		if(isRecordingStarted)
+		{
+			switchCameraOnRecording();
+		}
+		else
+		{
+			switchCameraOnPreview();
+		}
 	}
 
 
 
+	private void switchCameraOnRecording()
+	{
+		try
+		{
+			manager.stopRecording();
+			manager.switchCurrentCamera();
+			manager.startRecording(holder);
+		}
+		catch (Exception ex)
+		{
+			Trace.Print(ex);
+			onVideoCaptureError.fire(ex);
+			manager.stopRecording();
+			manager.startPreview(true);
+		}
+	}
+
+
+	
+	private void switchCameraOnPreview()
+	{
+		manager.stopPreview(false);
+		manager.switchCurrentCamera();
+		manager.startPreview(false);
+	}
 	
 
 
