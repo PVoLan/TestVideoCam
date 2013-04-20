@@ -2,7 +2,7 @@ package com.example.testvideocam;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import ru.pvolan.event.ParametrizedCustomEvent;
 import ru.pvolan.trace.Trace;
@@ -15,7 +15,10 @@ import android.view.SurfaceHolder;
 
 public class CameraManager
 {
-	private Camera camera;
+	private Camera currentCamera;
+	private int currentCameraIndex = 0;
+	private List<Camera> cameras = new ArrayList<Camera>();
+	
 	private MediaRecorder mediaRecorder;
 	private File outputFile;
 	
@@ -27,59 +30,85 @@ public class CameraManager
 		super();
 	}
 	
-	public void createCamera(SurfaceHolder holder, int cameraNo)
+	public void createCameras(SurfaceHolder holder)
 	{
-		try
+		int maxCameras = Camera.getNumberOfCameras();
+		Trace.Print("Total cameras: " + maxCameras);
+		
+		for (int i = 0; i < maxCameras; i++)
 		{
-			camera = Camera.open(cameraNo);
-			camera.setPreviewDisplay(holder);
-		}
-		catch (Exception exception)
-		{
-			Trace.Print(exception);
-			camera.release();
-			camera = null;
+			Camera c = null;
+			try
+			{
+				c = Camera.open(i);
+				c.setPreviewDisplay(holder);
+				cameras.add(c);
+				Trace.Print("Camera created: " + i);
+			}
+			catch (Exception exception)
+			{
+				Trace.Print(exception);
+				if(c != null)
+				{
+					c.release();
+					c = null;
+				}
 
-			onVideoCaptureError.fire(exception);
-		}		
+				onVideoCaptureError.fire(exception);
+			}
+		}
+		
+		currentCamera = cameras.get(0);
 	}
 	
 	
 
 
 
-	public void destroyCamera()
+	public void destroyCameras()
 	{
-		camera.stopPreview();
-		camera.setPreviewCallback(null);
-		camera.release();
-		camera = null;
+		for (Camera c : cameras)
+		{
+			c.stopPreview();
+			
+			try
+			{
+				c.unlock();
+			}
+			catch(Exception ex){}
+			
+			c.setPreviewCallback(null);
+			c.release();
+			c = null;
+		}
 	}
 
 
 
 	public void updateCameraSizeApproximately(int w, int h)
 	{
-		Camera.Parameters parameters = camera.getParameters();
-
-		List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-		Camera.Size max = camera.new Size(0, 0);
-
-		for (Camera.Size size : previewSizes)
+		for (Camera c : cameras)
 		{
-
-			if (size.width <= w && size.height <= h
-					&& (max.width < size.width || max.height < size.height))
+			Camera.Parameters parameters = c.getParameters();
+	
+			List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+			Camera.Size max = c.new Size(0, 0);
+	
+			for (Camera.Size size : previewSizes)
 			{
-				max = size;
+				if (size.width <= w && size.height <= h
+						&& (max.width < size.width || max.height < size.height))
+				{
+					max = size;
+				}
+	
 			}
-
+	
+			Trace.Print("max " + max.width + "x" + max.height);
+	
+			parameters.setPreviewSize(max.width, max.height);
+			c.setParameters(parameters);
 		}
-
-		Trace.Print("max " + max.width + "x" + max.height);
-
-		parameters.setPreviewSize(max.width, max.height);
-		camera.setParameters(parameters);
 	}
 
 
@@ -87,7 +116,7 @@ public class CameraManager
 	public File startRecording(SurfaceHolder holder) throws IOException
 	{
 		mediaRecorder = new MediaRecorder();
-		mediaRecorder.setCamera(camera);
+		mediaRecorder.setCamera(currentCamera);
 		mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 		mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 		mediaRecorder.setProfile(CamcorderProfile
@@ -156,21 +185,29 @@ public class CameraManager
 	public void startPreview(boolean lockRequired)
 	{
 		if (lockRequired)
-			camera.lock();
-		camera.startPreview();
+			currentCamera.lock();
+		currentCamera.startPreview();
 	}
 
 
 
 	public void stopPreview(boolean unlockRequired)
 	{
-		camera.stopPreview();
+		currentCamera.stopPreview();
 		if (unlockRequired)
-			camera.unlock();
+			currentCamera.unlock();
 	}
 	
-	public int getMaxCameraNo()
+	public void switchCurrentCamera()
 	{
-		return Camera.getNumberOfCameras()-1;		
+		currentCameraIndex++;
+		
+		if(cameras.size() >= currentCameraIndex)
+		{
+			currentCameraIndex = 0;
+		}
+		
+		currentCamera = cameras.get(currentCameraIndex);
+		Trace.Print("Switched to camera " + currentCameraIndex);
 	}
 }
