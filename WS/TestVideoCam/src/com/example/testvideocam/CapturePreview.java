@@ -19,7 +19,7 @@ public class CapturePreview extends SurfaceView implements
 	private SurfaceHolder holder;
 	private int previewWidth = 0;
 	private int previewHeight = 0;
-	private int currentCameraNo = 0;
+	private int cameraNo = 0;
 	private boolean isRecordingStarted = false;
 
 	// public events
@@ -34,19 +34,10 @@ public class CapturePreview extends SurfaceView implements
 
 	// init **************************************************
 
-	public CapturePreview(Context context, AttributeSet attrs)
-	{
-		// TODO Auto-generated constructor stub
-		super(context, attrs);
-		init();
-	}
-
-
-
-	CapturePreview(Context context)
+	CapturePreview(Context context, int cameraNo)
 	{
 		super(context);
-
+		this.cameraNo = cameraNo;
 		init();
 	}
 
@@ -92,8 +83,7 @@ public class CapturePreview extends SurfaceView implements
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw.
 
-		manager.createCamera(holder, 0);
-		currentCameraNo = 0;
+		manager.createCamera(holder, cameraNo);
 
 		onCreated.fire();
 	}
@@ -181,10 +171,16 @@ public class CapturePreview extends SurfaceView implements
 		onVideoCaptureStopped.fire();
 	}
 
-	
+	public int getMaxCameraNo()
+	{
+		return manager.getMaxCameraNo();
+	}
 
+	/*
 	public void switchCamera()
 	{
+		
+		
 		if(isRecordingStarted) return; //TODO
 		
 		currentCameraNo++;
@@ -204,7 +200,7 @@ public class CapturePreview extends SurfaceView implements
 			manager.createCamera(holder, currentCameraNo);
 			manager.startPreview(false);
 		}
-	}
+	}*/
 	
 
 

@@ -6,7 +6,7 @@
     android:background="#f00"
      >
 
-    <com.example.testvideocam.CapturePreview 
+    <com.example.testvideocam.CapturePreviewWrapper 
         android:id="@+id/previewCamera"
         android:layout_width="match_parent"
     	android:layout_height="match_parent"        
