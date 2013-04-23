@@ -48,14 +48,14 @@ public class MainActivity extends Activity {
         buttonSwitch = (Button) findViewById(R.id.buttonSwitch);
         
         
-        previewCamera.getPreview().onCreated.addListener(new CustomEventListener() {			
+        previewCamera.onCreated.addListener(new CustomEventListener() {			
 			@Override
 			public void onEvent() {
 				//camera = previewCamera.getCamera();				
 			}
 		});
         
-        previewCamera.getPreview().onVideoCaptureStarted.addListener(new CustomEventListener() {			
+        previewCamera.onVideoCaptureStarted.addListener(new CustomEventListener() {			
 			@Override
 			public void onEvent() {
 				runOnUiThread(new Runnable() {					
@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
 			}
 		});  
         
-        previewCamera.getPreview().onVideoCaptureStopped.addListener(new CustomEventListener() {			
+        previewCamera.onVideoCaptureStopped.addListener(new CustomEventListener() {			
 			@Override
 			public void onEvent() {
 				runOnUiThread(new Runnable() {					
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 			}
 		});  
         
-        previewCamera.getPreview().onVideoCaptureInfo.addListener(new ParametrizedCustomEventListener<MediaRecorderInfo>() {
+        previewCamera.onVideoCaptureInfo.addListener(new ParametrizedCustomEventListener<MediaRecorderInfo>() {
 			
 			@Override
 			public void onEvent(final MediaRecorderInfo param) {
@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
 		});
         
         
-        previewCamera.getPreview().onVideoCaptureError.addListener(new ParametrizedCustomEventListener<Throwable>() {
+        previewCamera.onVideoCaptureError.addListener(new ParametrizedCustomEventListener<Throwable>() {
 			
 			@Override
 			public void onEvent(final Throwable param) {
@@ -171,13 +171,13 @@ public class MainActivity extends Activity {
 
 	private void onButtonRecClick() 
     {
-		previewCamera.getPreview().startVideoCapture();
+		previewCamera.startVideoCapture();
 	}
     
     
     private void onButtonStopClick() 
     {
-		previewCamera.getPreview().stopVideoCapture();
+		previewCamera.stopVideoCapture();
 	}
     
     private void onButtonSwitchClick() 
@@ -186,11 +186,11 @@ public class MainActivity extends Activity {
     	
     	if(needRestartCapture)
 		{
-			previewCamera.getPreview().stopVideoCapture();			
+			previewCamera.stopVideoCapture();			
 		}
 		
 		currentCameraNo++;
-		if(currentCameraNo > previewCamera.getPreview().getMaxCameraNo())
+		if(currentCameraNo > previewCamera.getMaxCameraNo())
 		{
 			currentCameraNo=0;
 		}
@@ -202,14 +202,14 @@ public class MainActivity extends Activity {
 		if(needRestartCapture)
 		{
 			Trace.Print("++++++++++++++++++++++++once listener added");
-			previewCamera.getPreview().onCreated.addListener(new CustomEventListener() {
+			previewCamera.onCreated.addListener(new CustomEventListener() {
 				
 				@Override
 				public void onEvent()
 				{
 					Trace.Print("++++++++++++++++++++++++once listener call");
-					previewCamera.getPreview().startVideoCapture();
-					previewCamera.getPreview().onCreated.removeListener(this);
+					previewCamera.startVideoCapture();
+					previewCamera.onCreated.removeListener(this);
 				}
 			});
 		}
