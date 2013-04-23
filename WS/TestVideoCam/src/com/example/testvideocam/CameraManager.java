@@ -72,7 +72,7 @@ public class CameraManager
 		for (Camera.Size size : previewSizes)
 		{
 			
-			Trace.Print("Available size " + max.width + "x" + max.height);
+			Trace.Print("Camera " + cameraNo + " Available size " + max.width + "x" + max.height);
 
 			if (size.width <= w && size.height <= h
 					&& (max.width < size.width || max.height < size.height))
@@ -131,6 +131,8 @@ public class CameraManager
 		
 		//TODO Exceptional devices
 		mediaRecorder.setOrientationHint(90);
+		
+		mediaRecorder.setVideoSize(640,480); //TODO ????
 		
 		mediaRecorder.setOnErrorListener(new OnErrorListener() 
 		{
