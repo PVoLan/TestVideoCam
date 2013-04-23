@@ -29,13 +29,13 @@ public class CameraManager
 		super();
 	}
 	
-	public void createCamera(SurfaceHolder holder, int cameraNo)
+	public void createCamera(int cameraNo)
 	{
 		try
 		{
 			this.cameraNo = cameraNo;
 			camera = Camera.open(cameraNo);
-			camera.setPreviewDisplay(holder);
+			Trace.Print("Camera created " + cameraNo);
 		}
 		catch (Exception exception)
 		{
@@ -57,11 +57,12 @@ public class CameraManager
 		camera.setPreviewCallback(null);
 		camera.release();
 		camera = null;
+		Trace.Print("Camera destroyed " + cameraNo);
 	}
 
 
 
-	public void updateCameraSizeApproximately(int w, int h)
+	public void updateCameraSizeApproximately(SurfaceHolder holder, int w, int h)
 	{
 		Camera.Parameters parameters = camera.getParameters();
 
@@ -70,6 +71,8 @@ public class CameraManager
 
 		for (Camera.Size size : previewSizes)
 		{
+			
+			Trace.Print("Available size " + max.width + "x" + max.height);
 
 			if (size.width <= w && size.height <= h
 					&& (max.width < size.width || max.height < size.height))
@@ -77,12 +80,33 @@ public class CameraManager
 				max = size;
 			}
 
+			
+			
 		}
 
 		Trace.Print("max " + max.width + "x" + max.height);
 
+		//TODO Excepional devices
+		
+		parameters.setRotation(90);
+		parameters.set("orientation", "portrait");
+		camera.setDisplayOrientation(90);
 		parameters.setPreviewSize(max.width, max.height);
 		camera.setParameters(parameters);
+		
+
+		try
+		{
+			camera.setPreviewDisplay(holder);
+		}
+		catch (IOException exception)
+		{
+			Trace.Print(exception);
+			camera.release();
+			camera = null;
+
+			onVideoCaptureError.fire(exception);
+		}
 	}
 
 
@@ -104,6 +128,9 @@ public class CameraManager
 
 		mediaRecorder.setOutputFile(outputFile.getAbsolutePath());
 		mediaRecorder.setPreviewDisplay(holder.getSurface());
+		
+		//TODO Exceptional devices
+		mediaRecorder.setOrientationHint(90);
 		
 		mediaRecorder.setOnErrorListener(new OnErrorListener() 
 		{

@@ -83,7 +83,7 @@ public class CapturePreview extends SurfaceView implements
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw.
 
-		manager.createCamera(holder, cameraNo);
+		manager.createCamera(cameraNo);
 
 		onCreated.fire();
 	}
@@ -120,7 +120,7 @@ public class CapturePreview extends SurfaceView implements
 			manager.stopPreview(false);
 			previewWidth = w;
 			previewHeight = h;
-			manager.updateCameraSizeApproximately(previewWidth, previewHeight);
+			manager.updateCameraSizeApproximately(holder, previewWidth, previewHeight);
 			manager.startPreview(false);
 		}
 		catch (Exception e)
