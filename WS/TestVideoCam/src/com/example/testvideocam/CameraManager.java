@@ -16,6 +16,8 @@ import android.view.SurfaceHolder;
 public class CameraManager
 {
 	private Camera camera;
+	private int cameraNo;
+	
 	private MediaRecorder mediaRecorder;
 	private File outputFile;
 	
@@ -31,6 +33,7 @@ public class CameraManager
 	{
 		try
 		{
+			this.cameraNo = cameraNo;
 			camera = Camera.open(cameraNo);
 			camera.setPreviewDisplay(holder);
 		}
@@ -91,7 +94,7 @@ public class CameraManager
 		mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 		mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 		mediaRecorder.setProfile(CamcorderProfile
-				.get(CamcorderProfile.QUALITY_HIGH));
+				.get(cameraNo, CamcorderProfile.QUALITY_HIGH));
 
 		outputFile = MediaFileManager.getOutputVideoFile();
 		if (outputFile == null)
