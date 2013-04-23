@@ -7,11 +7,12 @@ import java.util.*;
 import ru.pvolan.event.ParametrizedCustomEvent;
 import ru.pvolan.trace.Trace;
 
+import android.app.*;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.*;
-import android.view.SurfaceHolder;
+import android.view.*;
 
 public class CameraManager
 {
@@ -41,7 +42,7 @@ public class CameraManager
 			try
 			{
 				c = Camera.open(i);
-				c.setPreviewDisplay(holder);
+				//c.setPreviewDisplay(holder);
 				cameras.add(c);
 				Trace.Print("Camera created: " + i);
 			}
@@ -58,7 +59,7 @@ public class CameraManager
 			}
 		}
 		
-		currentCamera = cameras.get(0);
+		currentCamera = cameras.get(0);		
 	}
 	
 	
@@ -85,7 +86,7 @@ public class CameraManager
 
 
 
-	public void updateCameraSizeApproximately(int w, int h)
+	public void updateCameraSizeApproximately(SurfaceHolder holder, int w, int h)
 	{
 		for (Camera c : cameras)
 		{
@@ -107,7 +108,21 @@ public class CameraManager
 			Trace.Print("max " + max.width + "x" + max.height);
 	
 			parameters.setPreviewSize(max.width, max.height);
+			parameters.setRotation(90);
+			parameters.set("orientation", "portrait");
+			c.setDisplayOrientation(90);
+			
 			c.setParameters(parameters);
+			try
+			{
+				c.setPreviewDisplay(holder);
+			}
+			catch (IOException e)
+			{
+				Trace.Print(e);
+			}
+			
+			//setCameraDisplayOrientation(activity, i, c);
 		}
 	}
 
@@ -130,6 +145,8 @@ public class CameraManager
 
 		mediaRecorder.setOutputFile(outputFile.getAbsolutePath());
 		mediaRecorder.setPreviewDisplay(holder.getSurface());
+		
+		mediaRecorder.setOrientationHint(90);
 		
 		mediaRecorder.setOnErrorListener(new OnErrorListener() 
 		{
@@ -210,4 +227,34 @@ public class CameraManager
 		currentCamera = cameras.get(currentCameraIndex);
 		Trace.Print("Switched to camera " + currentCameraIndex);
 	}
+	
+	
+	
+	// privates ***********************************
+	/*
+	private void setCameraDisplayOrientation(Activity activity,
+	         int cameraId, android.hardware.Camera camera) 
+	{
+	     android.hardware.Camera.CameraInfo info =
+	             new android.hardware.Camera.CameraInfo();
+	     android.hardware.Camera.getCameraInfo(cameraId, info);
+	     int rotation = activity.getWindowManager().getDefaultDisplay()
+	             .getRotation();
+	     int degrees = 0;
+	     switch (rotation) {
+	         case Surface.ROTATION_0: degrees = 0; break;
+	         case Surface.ROTATION_90: degrees = 90; break;
+	         case Surface.ROTATION_180: degrees = 180; break;
+	         case Surface.ROTATION_270: degrees = 270; break;
+	     }
+
+	     int result;
+	     if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+	         result = (info.orientation + degrees) % 360;
+	         result = (360 - result) % 360;  // compensate the mirror
+	     } else {  // back-facing
+	         result = (info.orientation - degrees + 360) % 360;
+	     }
+	     camera.setDisplayOrientation(result);
+	 }*/
 }

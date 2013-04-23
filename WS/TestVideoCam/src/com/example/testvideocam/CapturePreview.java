@@ -4,6 +4,7 @@ import java.io.*;
 
 import ru.pvolan.event.*;
 import ru.pvolan.trace.*;
+import android.app.*;
 import android.content.*;
 import android.util.*;
 import android.view.*;
@@ -124,7 +125,7 @@ public class CapturePreview extends SurfaceView implements
 		try
 		{
 			manager.stopPreview(false);
-			manager.updateCameraSizeApproximately(w, h);
+			manager.updateCameraSizeApproximately(holder, w, h);
 			manager.startPreview(false);
 		}
 		catch (Exception e)
@@ -191,6 +192,8 @@ public class CapturePreview extends SurfaceView implements
 	}
 
 
+	
+	// privates **************************************
 
 	private void switchCameraOnRecording()
 	{
@@ -218,6 +221,5 @@ public class CapturePreview extends SurfaceView implements
 		manager.startPreview(false);
 	}
 	
-
 
 }
