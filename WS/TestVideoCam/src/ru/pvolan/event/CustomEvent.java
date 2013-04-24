@@ -3,6 +3,8 @@ package ru.pvolan.event;
 
 import java.util.*;
 
+//Реализация C#-овых event'ов. Он же шаблон Observer-Observable. Чрезвычайно удобно.
+
 public class CustomEvent {
 	ArrayList<CustomEventListener> listeners;
 	

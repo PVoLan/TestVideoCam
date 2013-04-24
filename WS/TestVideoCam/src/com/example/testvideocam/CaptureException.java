@@ -2,7 +2,7 @@ package com.example.testvideocam;
 
 import android.media.MediaRecorder;
 
-
+//Обертка над Error, которые возвращает MediaRecorder
 public class CaptureException extends Exception
 {
 
