@@ -16,22 +16,22 @@ import android.view.View.OnClickListener;
 import android.widget.*;
 
 /**
- * Просто активити. Содержит вьюху-камеру и три кнопки - запись-останов, перключение камеры
- * Запись-останов видимы попеременно.
- * Также активити помнит текщий номер камеры и сама определяет, куда переключаться по switch'у
+ * РџСЂРѕСЃС‚Рѕ Р°РєС‚РёРІРёС‚Рё. РЎРѕРґРµСЂР¶РёС‚ РІСЊСЋС…Сѓ-РєР°РјРµСЂСѓ Рё С‚СЂРё РєРЅРѕРїРєРё - Р·Р°РїРёСЃСЊ-РѕСЃС‚Р°РЅРѕРІ, РїРµСЂРєР»СЋС‡РµРЅРёРµ РєР°РјРµСЂС‹
+ * Р—Р°РїРёСЃСЊ-РѕСЃС‚Р°РЅРѕРІ РІРёРґРёРјС‹ РїРѕРїРµСЂРµРјРµРЅРЅРѕ.
+ * РўР°РєР¶Рµ Р°РєС‚РёРІРёС‚Рё РїРѕРјРЅРёС‚ С‚РµРєС‰РёР№ РЅРѕРјРµСЂ РєР°РјРµСЂС‹ Рё СЃР°РјР° РѕРїСЂРµРґРµР»СЏРµС‚, РєСѓРґР° РїРµСЂРµРєР»СЋС‡Р°С‚СЊСЃСЏ РїРѕ switch'Сѓ
  */
 public class MainActivity extends Activity
 {
 
-	//Обернутая SurfaceView
+	//РћР±РµСЂРЅСѓС‚Р°СЏ SurfaceView
 	CapturePreviewWrapper previewCamera;
 	
-	//Кнопки
+	//РљРЅРѕРїРєРё
 	Button buttonRec;
 	Button buttonStop;
 	Button buttonSwitch;
 	
-	//Состояние записи
+	//РЎРѕСЃС‚РѕСЏРЅРёРµ Р·Р°РїРёСЃРё
 	private int currentCameraNo;
 	private boolean isRecordingStarted;
 
@@ -51,7 +51,7 @@ public class MainActivity extends Activity
 
 		// TODO Front camera exist?
 		
-		//Инициализация лейаута
+		//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р»РµР№Р°СѓС‚Р°
 
 		setContentView(R.layout.activity_main);
 
@@ -61,7 +61,7 @@ public class MainActivity extends Activity
 		buttonSwitch = (Button) findViewById(R.id.buttonSwitch);
 
 		
-		//Цепляем обработчики к сообщениям с камеры
+		//Р¦РµРїР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё Рє СЃРѕРѕР±С‰РµРЅРёСЏРј СЃ РєР°РјРµСЂС‹
 		
 		previewCamera.onCreated.addListener(new CustomEventListener() {
 			@Override
@@ -134,7 +134,7 @@ public class MainActivity extends Activity
 				});
 
 		
-		//Цепляем обработчи к кнопкам
+		//Р¦РµРїР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡Рё Рє РєРЅРѕРїРєР°Рј
 		
 		buttonRec.setOnClickListener(new OnClickListener() {
 			@Override
@@ -162,7 +162,7 @@ public class MainActivity extends Activity
 	}
 
 
-	// Несколько переопределений чисто для цели логгирования
+	// РќРµСЃРєРѕР»СЊРєРѕ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёР№ С‡РёСЃС‚Рѕ РґР»СЏ С†РµР»Рё Р»РѕРіРіРёСЂРѕРІР°РЅРёСЏ
 
 	@Override
 	protected void onResume()
@@ -194,7 +194,7 @@ public class MainActivity extends Activity
 	}
 
 
-	//Атавизм от шаблона, созданного эклипсом
+	//РђС‚Р°РІРёР·Рј РѕС‚ С€Р°Р±Р»РѕРЅР°, СЃРѕР·РґР°РЅРЅРѕРіРѕ СЌРєР»РёРїСЃРѕРј
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -208,7 +208,7 @@ public class MainActivity extends Activity
 
 	// *****************************************************************************
 
-	//Обработчики кнопок примитивны
+	//РћР±СЂР°Р±РѕС‚С‡РёРєРё РєРЅРѕРїРѕРє РїСЂРёРјРёС‚РёРІРЅС‹
 	
 	private void onButtonRecClick()
 	{
@@ -224,28 +224,28 @@ public class MainActivity extends Activity
 
 
 
-	//Перелючение камеры чуть сложнее
+	//РџРµСЂРµР»СЋС‡РµРЅРёРµ РєР°РјРµСЂС‹ С‡СѓС‚СЊ СЃР»РѕР¶РЅРµРµ
 	private void onButtonSwitchClick()
 	{
 		boolean needRestartCapture = isRecordingStarted;
 
-		//Приостанавливаем запись
+		//РџСЂРёРѕСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·Р°РїРёСЃСЊ
 		if (needRestartCapture)
 		{
 			previewCamera.stopVideoCapture();
 		}
 
-		//Переключаем камеру
+		//РџРµСЂРµРєР»СЋС‡Р°РµРј РєР°РјРµСЂСѓ
 		currentCameraNo++;
 		if (currentCameraNo > previewCamera.getMaxCameraNo())
 		{
 			currentCameraNo = 0;
 		}
 
-		//Пересоздаем SurfaceView (вместе с ним пересоздается CameraManager и сама камера)
+		//РџРµСЂРµСЃРѕР·РґР°РµРј SurfaceView (РІРјРµСЃС‚Рµ СЃ РЅРёРј РїРµСЂРµСЃРѕР·РґР°РµС‚СЃСЏ CameraManager Рё СЃР°РјР° РєР°РјРµСЂР°)
 		previewCamera.recreatePreview(currentCameraNo);
 
-		//Запускаем запись обратно, если нужно. Асинхронно. Возможно, надо поднять этот вызов над recreatePreview.
+		//Р—Р°РїСѓСЃРєР°РµРј Р·Р°РїРёСЃСЊ РѕР±СЂР°С‚РЅРѕ, РµСЃР»Рё РЅСѓР¶РЅРѕ. РђСЃРёРЅС…СЂРѕРЅРЅРѕ. Р’РѕР·РјРѕР¶РЅРѕ, РЅР°РґРѕ РїРѕРґРЅСЏС‚СЊ СЌС‚РѕС‚ РІС‹Р·РѕРІ РЅР°Рґ recreatePreview.
 		if (needRestartCapture)
 		{
 			Trace.Print("++++++++++++++++++++++++once listener added");
@@ -264,7 +264,7 @@ public class MainActivity extends Activity
 	}
 
 
-	//Тосты по ошибкам/сообщениям
+	//РўРѕСЃС‚С‹ РїРѕ РѕС€РёР±РєР°Рј/СЃРѕРѕР±С‰РµРЅРёСЏРј
 	protected void onVideoCaptureError(Throwable param)
 	{
 
@@ -295,7 +295,7 @@ public class MainActivity extends Activity
 
 
 
-	//Переключение кнопок по старту-стопу записи.
+	//РџРµСЂРµРєР»СЋС‡РµРЅРёРµ РєРЅРѕРїРѕРє РїРѕ СЃС‚Р°СЂС‚Сѓ-СЃС‚РѕРїСѓ Р·Р°РїРёСЃРё.
 	protected void onVideoCaptureStopped()
 	{
 		buttonRec.setVisibility(View.VISIBLE);

@@ -3,7 +3,7 @@ package ru.pvolan.trace;
 import android.util.Log;
 
 
-//Чуть более удобный Log.i()
+//Р§СѓС‚СЊ Р±РѕР»РµРµ СѓРґРѕР±РЅС‹Р№ Log.i()
 public class Trace {
 	private static String tag = "TestVideoCam";
 	

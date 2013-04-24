@@ -3,7 +3,7 @@ package ru.pvolan.event;
 
 import java.util.*;
 
-//То же, что CustomEvent, но с параметром
+//РўРѕ Р¶Рµ, С‡С‚Рѕ CustomEvent, РЅРѕ СЃ РїР°СЂР°РјРµС‚СЂРѕРј
 public class ParametrizedCustomEvent<T> {
 	ArrayList<ParametrizedCustomEventListener<T>> listeners;
 	

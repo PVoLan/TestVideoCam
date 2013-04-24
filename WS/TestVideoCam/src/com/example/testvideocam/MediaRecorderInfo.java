@@ -2,7 +2,7 @@ package com.example.testvideocam;
 
 import android.media.MediaRecorder;
 
-//Обертка над Info, которые возвращает MediaRecorder
+//РћР±РµСЂС‚РєР° РЅР°Рґ Info, РєРѕС‚РѕСЂС‹Рµ РІРѕР·РІСЂР°С‰Р°РµС‚ MediaRecorder
 public class MediaRecorderInfo
 {
 	private MediaRecorder mr;

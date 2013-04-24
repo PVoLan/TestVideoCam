@@ -8,7 +8,7 @@ import ru.pvolan.trace.Trace;
 
 import android.os.*;
 
-//Хелперный класс, создает выходной файл. На 80% утащен из документации.
+//РҐРµР»РїРµСЂРЅС‹Р№ РєР»Р°СЃСЃ, СЃРѕР·РґР°РµС‚ РІС‹С…РѕРґРЅРѕР№ С„Р°Р№Р». РќР° 80% СѓС‚Р°С‰РµРЅ РёР· РґРѕРєСѓРјРµРЅС‚Р°С†РёРё.
 public class MediaFileManager
 {
 	private final static String subdirname = "TestCamApp";

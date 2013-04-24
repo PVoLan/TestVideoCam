@@ -16,24 +16,24 @@ import android.view.SurfaceHolder;
 
 
 /**
- * CameraManager - собственно, класс, который менеджит управление камерой. Единственный класс, имеющий доступ к android.hardware.Camera
- * Умеет создавать-уничтожать камеру по её номеру, настраивать размер, запускать-останавливать превью, запускать-устанавливать съемку.
- * а также оповещать кого-нибудь об ошибках записи
- * Единовременно работает только с одной камерой
+ * CameraManager - СЃРѕР±СЃС‚РІРµРЅРЅРѕ, РєР»Р°СЃСЃ, РєРѕС‚РѕСЂС‹Р№ РјРµРЅРµРґР¶РёС‚ СѓРїСЂР°РІР»РµРЅРёРµ РєР°РјРµСЂРѕР№. Р•РґРёРЅСЃС‚РІРµРЅРЅС‹Р№ РєР»Р°СЃСЃ, РёРјРµСЋС‰РёР№ РґРѕСЃС‚СѓРї Рє android.hardware.Camera
+ * РЈРјРµРµС‚ СЃРѕР·РґР°РІР°С‚СЊ-СѓРЅРёС‡С‚РѕР¶Р°С‚СЊ РєР°РјРµСЂСѓ РїРѕ РµС‘ РЅРѕРјРµСЂСѓ, РЅР°СЃС‚СЂР°РёРІР°С‚СЊ СЂР°Р·РјРµСЂ, Р·Р°РїСѓСЃРєР°С‚СЊ-РѕСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ РїСЂРµРІСЊСЋ, Р·Р°РїСѓСЃРєР°С‚СЊ-СѓСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ СЃСЉРµРјРєСѓ.
+ * Р° С‚Р°РєР¶Рµ РѕРїРѕРІРµС‰Р°С‚СЊ РєРѕРіРѕ-РЅРёР±СѓРґСЊ РѕР± РѕС€РёР±РєР°С… Р·Р°РїРёСЃРё
+ * Р•РґРёРЅРѕРІСЂРµРјРµРЅРЅРѕ СЂР°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ СЃ РѕРґРЅРѕР№ РєР°РјРµСЂРѕР№
  */
 public class CameraManager
 {
-	//Камера и её номер. Актуальны только в момент, когда камера существует
+	//РљР°РјРµСЂР° Рё РµС‘ РЅРѕРјРµСЂ. РђРєС‚СѓР°Р»СЊРЅС‹ С‚РѕР»СЊРєРѕ РІ РјРѕРјРµРЅС‚, РєРѕРіРґР° РєР°РјРµСЂР° СЃСѓС‰РµСЃС‚РІСѓРµС‚
 	private Camera camera;
 	private int cameraNo;
 
-	//Рекордер и выходной файл для записи. Актуальны только в момент, когда ведется запись
+	//Р РµРєРѕСЂРґРµСЂ Рё РІС‹С…РѕРґРЅРѕР№ С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё. РђРєС‚СѓР°Р»СЊРЅС‹ С‚РѕР»СЊРєРѕ РІ РјРѕРјРµРЅС‚, РєРѕРіРґР° РІРµРґРµС‚СЃСЏ Р·Р°РїРёСЃСЊ
 	private MediaRecorder mediaRecorder;
 	private File outputFile;
 
-	//Евенты об ошибках записи и информационных сообщениях. (см ru.pvolan.event) В случае ошибки передается Throwable
-	//в случае инфо - контейнер MediaRecorderInfo (внутри содержит what и extra)
-	//onVideoCaptureError надо бы переименовать, ибо он кидает ошибки не только Capture
+	//Р•РІРµРЅС‚С‹ РѕР± РѕС€РёР±РєР°С… Р·Р°РїРёСЃРё Рё РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹С… СЃРѕРѕР±С‰РµРЅРёСЏС…. (СЃРј ru.pvolan.event) Р’ СЃР»СѓС‡Р°Рµ РѕС€РёР±РєРё РїРµСЂРµРґР°РµС‚СЃСЏ Throwable
+	//РІ СЃР»СѓС‡Р°Рµ РёРЅС„Рѕ - РєРѕРЅС‚РµР№РЅРµСЂ MediaRecorderInfo (РІРЅСѓС‚СЂРё СЃРѕРґРµСЂР¶РёС‚ what Рё extra)
+	//onVideoCaptureError РЅР°РґРѕ Р±С‹ РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ, РёР±Рѕ РѕРЅ РєРёРґР°РµС‚ РѕС€РёР±РєРё РЅРµ С‚РѕР»СЊРєРѕ Capture
 	public ParametrizedCustomEvent<Throwable> onVideoCaptureError = new ParametrizedCustomEvent<Throwable>();
 	public ParametrizedCustomEvent<MediaRecorderInfo> onVideoCaptureInfo = new ParametrizedCustomEvent<MediaRecorderInfo>();
 
@@ -45,7 +45,7 @@ public class CameraManager
 	}
 
 
-	//Просто создаем камеру по её номеру
+	//РџСЂРѕСЃС‚Рѕ СЃРѕР·РґР°РµРј РєР°РјРµСЂСѓ РїРѕ РµС‘ РЅРѕРјРµСЂСѓ
 	public void createCamera(int cameraNo)
 	{
 		try
@@ -65,7 +65,7 @@ public class CameraManager
 	}
 
 
-	//Уничтожаем камеру. Предполагается, что камера к тому моменту была создана, хотя проверка на null тут не помешала бы
+	//РЈРЅРёС‡С‚РѕР¶Р°РµРј РєР°РјРµСЂСѓ. РџСЂРµРґРїРѕР»Р°РіР°РµС‚СЃСЏ, С‡С‚Рѕ РєР°РјРµСЂР° Рє С‚РѕРјСѓ РјРѕРјРµРЅС‚Сѓ Р±С‹Р»Р° СЃРѕР·РґР°РЅР°, С…РѕС‚СЏ РїСЂРѕРІРµСЂРєР° РЅР° null С‚СѓС‚ РЅРµ РїРѕРјРµС€Р°Р»Р° Р±С‹
 	public void destroyCamera()
 	{
 		camera.stopPreview();
@@ -76,17 +76,17 @@ public class CameraManager
 	}
 
 
-	//Приблизительно подгоняем размер превью под заданные. Заодно прицепляем камеру к SurfaceView через холдер
-	//Метод надо бы переименовать
+	//РџСЂРёР±Р»РёР·РёС‚РµР»СЊРЅРѕ РїРѕРґРіРѕРЅСЏРµРј СЂР°Р·РјРµСЂ РїСЂРµРІСЊСЋ РїРѕРґ Р·Р°РґР°РЅРЅС‹Рµ. Р—Р°РѕРґРЅРѕ РїСЂРёС†РµРїР»СЏРµРј РєР°РјРµСЂСѓ Рє SurfaceView С‡РµСЂРµР· С…РѕР»РґРµСЂ
+	//РњРµС‚РѕРґ РЅР°РґРѕ Р±С‹ РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ
 	public void updateCameraSizeApproximately(SurfaceHolder holder, int w, int h)
 	{
 		Camera.Parameters parameters = camera.getParameters();
 
-		//Собственно, получаем досутпгые размеры
+		//РЎРѕР±СЃС‚РІРµРЅРЅРѕ, РїРѕР»СѓС‡Р°РµРј РґРѕСЃСѓС‚РїРіС‹Рµ СЂР°Р·РјРµСЂС‹
 		List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
 		Camera.Size max = camera.new Size(0, 0);
 
-		//Ищем подходящий размер
+		//РС‰РµРј РїРѕРґС…РѕРґСЏС‰РёР№ СЂР°Р·РјРµСЂ
 		for (Camera.Size size : previewSizes)
 		{
 
@@ -105,18 +105,18 @@ public class CameraManager
 
 		// TODO Excepional devices
 
-		//Устанавливаем поворот
+		//РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕРІРѕСЂРѕС‚
 		parameters.setRotation(90);
 		parameters.set("orientation", "portrait");
 		camera.setDisplayOrientation(90);
 		
-		//Устанавливаем размер
+		//РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р·РјРµСЂ
 		parameters.setPreviewSize(max.width, max.height);
 		
 		
 		camera.setParameters(parameters);
 
-		//Устанавливаем SurfaceView
+		//РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј SurfaceView
 		try
 		{
 			camera.setPreviewDisplay(holder);
@@ -132,10 +132,10 @@ public class CameraManager
 	}
 
 
-	//Метод начала записи. Хм, а почему он кидает ексепшн? Нехорошо, должен кидать onVideoCaptureError
+	//РњРµС‚РѕРґ РЅР°С‡Р°Р»Р° Р·Р°РїРёСЃРё. РҐРј, Р° РїРѕС‡РµРјСѓ РѕРЅ РєРёРґР°РµС‚ РµРєСЃРµРїС€РЅ? РќРµС…РѕСЂРѕС€Рѕ, РґРѕР»Р¶РµРЅ РєРёРґР°С‚СЊ onVideoCaptureError
 	public File startRecording(SurfaceHolder holder) throws IOException
 	{
-		//Куча стандартных действий...
+		//РљСѓС‡Р° СЃС‚Р°РЅРґР°СЂС‚РЅС‹С… РґРµР№СЃС‚РІРёР№...
 		mediaRecorder = new MediaRecorder();
 		mediaRecorder.setCamera(camera);
 		mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
@@ -143,7 +143,7 @@ public class CameraManager
 		mediaRecorder.setProfile(CamcorderProfile.get(cameraNo,
 				CamcorderProfile.QUALITY_HIGH));
 
-		//Определение выходного файла
+		//РћРїСЂРµРґРµР»РµРЅРёРµ РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
 		outputFile = MediaFileManager.getOutputVideoFile();
 		if (outputFile == null)
 		{
@@ -152,17 +152,17 @@ public class CameraManager
 
 		mediaRecorder.setOutputFile(outputFile.getAbsolutePath());
 		
-		//Выставляем Surface
+		//Р’С‹СЃС‚Р°РІР»СЏРµРј Surface
 		mediaRecorder.setPreviewDisplay(holder.getSurface());
 
-		// Выставляем поворот
+		// Р’С‹СЃС‚Р°РІР»СЏРµРј РїРѕРІРѕСЂРѕС‚
 		// TODO Exceptional devices
 		mediaRecorder.setOrientationHint(90);
 
-		// Выставляем размер. Грубо выставляем
+		// Р’С‹СЃС‚Р°РІР»СЏРµРј СЂР°Р·РјРµСЂ. Р“СЂСѓР±Рѕ РІС‹СЃС‚Р°РІР»СЏРµРј
 		mediaRecorder.setVideoSize(640, 480); // TODO ????
 
-		//Прицепляем обработчики системных сообщений
+		//РџСЂРёС†РµРїР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё СЃРёСЃС‚РµРјРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№
 		mediaRecorder.setOnErrorListener(new OnErrorListener() {
 			@Override
 			public void onError(MediaRecorder mr, int what, int extra)
@@ -181,7 +181,7 @@ public class CameraManager
 		});
 
 		
-		//Далее стандартно
+		//Р”Р°Р»РµРµ СЃС‚Р°РЅРґР°СЂС‚РЅРѕ
 		mediaRecorder.prepare();
 
 		Trace.Print("#######################START RECORD#####################################");
@@ -191,7 +191,7 @@ public class CameraManager
 	}
 
 
-	//Остановка записи
+	//РћСЃС‚Р°РЅРѕРІРєР° Р·Р°РїРёСЃРё
 	public void stopRecording()
 	{
 		Trace.Print("#######################STOP RECORD#####################################");
@@ -201,7 +201,7 @@ public class CameraManager
 		}
 		catch (RuntimeException e)
 		{
-			//Удаляем файл, если в него ничего не записалось
+			//РЈРґР°Р»СЏРµРј С„Р°Р№Р», РµСЃР»Рё РІ РЅРµРіРѕ РЅРёС‡РµРіРѕ РЅРµ Р·Р°РїРёСЃР°Р»РѕСЃСЊ
 			if (outputFile != null)
 			{
 				if (outputFile.exists())
@@ -209,14 +209,14 @@ public class CameraManager
 			}
 		}
 
-		//Освобождаем ресурсы
+		//РћСЃРІРѕР±РѕР¶РґР°РµРј СЂРµСЃСѓСЂСЃС‹
 		mediaRecorder.reset();
 		mediaRecorder.release();
 		mediaRecorder = null;
 	}
 
 
-	//Тривиально. Т.к. лок требуется не всегда, передаем его через параметр
+	//РўСЂРёРІРёР°Р»СЊРЅРѕ. Рў.Рє. Р»РѕРє С‚СЂРµР±СѓРµС‚СЃСЏ РЅРµ РІСЃРµРіРґР°, РїРµСЂРµРґР°РµРј РµРіРѕ С‡РµСЂРµР· РїР°СЂР°РјРµС‚СЂ
 	public void startPreview(boolean lockRequired)
 	{
 		if (lockRequired)
@@ -225,7 +225,7 @@ public class CameraManager
 	}
 
 
-	//Тривиально. Т.к. лок требуется не всегда, передаем его через параметр
+	//РўСЂРёРІРёР°Р»СЊРЅРѕ. Рў.Рє. Р»РѕРє С‚СЂРµР±СѓРµС‚СЃСЏ РЅРµ РІСЃРµРіРґР°, РїРµСЂРµРґР°РµРј РµРіРѕ С‡РµСЂРµР· РїР°СЂР°РјРµС‚СЂ
 	public void stopPreview(boolean unlockRequired)
 	{
 		camera.stopPreview();
@@ -234,7 +234,7 @@ public class CameraManager
 	}
 
 
-	//Тривиально.
+	//РўСЂРёРІРёР°Р»СЊРЅРѕ.
 	public int getMaxCameraNo()
 	{
 		return Camera.getNumberOfCameras() - 1;

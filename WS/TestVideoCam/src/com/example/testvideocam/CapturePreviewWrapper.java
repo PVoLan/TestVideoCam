@@ -5,16 +5,16 @@ import android.content.*;
 import android.util.*;
 import android.widget.*;
 
-//SurfaceView в активити напрямую не кладется. Вокруг SurfaceView сделана обертка, которая умеет пересоздать
-//SurfaceView по необходимости. Необходимость возникает при смене камеры - сделать второй раз Camera.open()
-//на ту же камеру, не пересоздавая SurfaceView, не получается
-//Все публичные методы и события SurfaceView аккуратно проксируются
+//SurfaceView РІ Р°РєС‚РёРІРёС‚Рё РЅР°РїСЂСЏРјСѓСЋ РЅРµ РєР»Р°РґРµС‚СЃСЏ. Р’РѕРєСЂСѓРі SurfaceView СЃРґРµР»Р°РЅР° РѕР±РµСЂС‚РєР°, РєРѕС‚РѕСЂР°СЏ СѓРјРµРµС‚ РїРµСЂРµСЃРѕР·РґР°С‚СЊ
+//SurfaceView РїРѕ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё. РќРµРѕР±С…РѕРґРёРјРѕСЃС‚СЊ РІРѕР·РЅРёРєР°РµС‚ РїСЂРё СЃРјРµРЅРµ РєР°РјРµСЂС‹ - СЃРґРµР»Р°С‚СЊ РІС‚РѕСЂРѕР№ СЂР°Р· Camera.open()
+//РЅР° С‚Сѓ Р¶Рµ РєР°РјРµСЂСѓ, РЅРµ РїРµСЂРµСЃРѕР·РґР°РІР°СЏ SurfaceView, РЅРµ РїРѕР»СѓС‡Р°РµС‚СЃСЏ
+//Р’СЃРµ РїСѓР±Р»РёС‡РЅС‹Рµ РјРµС‚РѕРґС‹ Рё СЃРѕР±С‹С‚РёСЏ SurfaceView Р°РєРєСѓСЂР°С‚РЅРѕ РїСЂРѕРєСЃРёСЂСѓСЋС‚СЃСЏ
 public class CapturePreviewWrapper extends FrameLayout
 {
-	// Сам SurfaceView
+	// РЎР°Рј SurfaceView
 	private CapturePreview preview;
 
-	// Проксировка событий SurfaceView
+	// РџСЂРѕРєСЃРёСЂРѕРІРєР° СЃРѕР±С‹С‚РёР№ SurfaceView
 	public CustomEvent onCreated = new CustomEvent();
 	public ParametrizedCustomEvent<Throwable> onVideoCaptureError = new ParametrizedCustomEvent<Throwable>();
 	public ParametrizedCustomEvent<MediaRecorderInfo> onVideoCaptureInfo = new ParametrizedCustomEvent<MediaRecorderInfo>();
@@ -58,9 +58,9 @@ public class CapturePreviewWrapper extends FrameLayout
 
 	private void init()
 	{
-		//Создаем прокси-слушателей событий.
-		//Цеплять слушателей извне напрямую к евентам SurfaceView нельзя, иначе при пересоздании SurfaceView
-		//связь обрывается. Приходится делать посредников-listener и держать их внутри обеертки
+		//РЎРѕР·РґР°РµРј РїСЂРѕРєСЃРё-СЃР»СѓС€Р°С‚РµР»РµР№ СЃРѕР±С‹С‚РёР№.
+		//Р¦РµРїР»СЏС‚СЊ СЃР»СѓС€Р°С‚РµР»РµР№ РёР·РІРЅРµ РЅР°РїСЂСЏРјСѓСЋ Рє РµРІРµРЅС‚Р°Рј SurfaceView РЅРµР»СЊР·СЏ, РёРЅР°С‡Рµ РїСЂРё РїРµСЂРµСЃРѕР·РґР°РЅРёРё SurfaceView
+		//СЃРІСЏР·СЊ РѕР±СЂС‹РІР°РµС‚СЃСЏ. РџСЂРёС…РѕРґРёС‚СЃСЏ РґРµР»Р°С‚СЊ РїРѕСЃСЂРµРґРЅРёРєРѕРІ-listener Рё РґРµСЂР¶Р°С‚СЊ РёС… РІРЅСѓС‚СЂРё РѕР±РµРµСЂС‚РєРё
 		onCreatedListener = new CustomEventListener() {
 
 			@Override
@@ -107,7 +107,7 @@ public class CapturePreviewWrapper extends FrameLayout
 			}
 		};
 
-		//Создаем SurfaceView
+		//РЎРѕР·РґР°РµРј SurfaceView
 		createPreview(0);
 
 	}
@@ -115,7 +115,7 @@ public class CapturePreviewWrapper extends FrameLayout
 
 	//This's own methods
 
-	//Метод пересоздания SurfaceView
+	//РњРµС‚РѕРґ РїРµСЂРµСЃРѕР·РґР°РЅРёСЏ SurfaceView
 	public void recreatePreview(int cameraNo)
 	{
 		removePreview();
@@ -126,7 +126,7 @@ public class CapturePreviewWrapper extends FrameLayout
 
 	private void removePreview()
 	{
-		removePreviewListeners(); //При удалении SurfaceView автоматически отписываемся от событий
+		removePreviewListeners(); //РџСЂРё СѓРґР°Р»РµРЅРёРё SurfaceView Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‚РїРёСЃС‹РІР°РµРјСЃСЏ РѕС‚ СЃРѕР±С‹С‚РёР№
 		removeAllViews();
 	}
 
@@ -140,12 +140,12 @@ public class CapturePreviewWrapper extends FrameLayout
 				FrameLayout.LayoutParams.FILL_PARENT));
 		addView(preview);
 		
-		addPreviewListeners(); //При создании SurfaceView подписываемся на события
+		addPreviewListeners(); //РџСЂРё СЃРѕР·РґР°РЅРёРё SurfaceView РїРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РЅР° СЃРѕР±С‹С‚РёСЏ
 	}
 
 
 
-	//Тривиально
+	//РўСЂРёРІРёР°Р»СЊРЅРѕ
 	private void addPreviewListeners()
 	{
 		preview.onCreated.addListener(onCreatedListener);
@@ -172,7 +172,7 @@ public class CapturePreviewWrapper extends FrameLayout
 
 
 	
-	// Прокси методов SurfaceView ****************
+	// РџСЂРѕРєСЃРё РјРµС‚РѕРґРѕРІ SurfaceView ****************
 
 	public void startVideoCapture()
 	{

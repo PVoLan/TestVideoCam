@@ -9,19 +9,19 @@ import android.util.*;
 import android.view.*;
 import android.widget.*;
 
-//Собственно вью, который показываает нам изображение с камеры, и заодно немного управляет съемкой
-//При создании себя создает камеру (через менеджер, номер камеры задается извне) и запускает превью автоматически.
-//Запись запускается по запросу.
+//РЎРѕР±СЃС‚РІРµРЅРЅРѕ РІСЊСЋ, РєРѕС‚РѕСЂС‹Р№ РїРѕРєР°Р·С‹РІР°Р°РµС‚ РЅР°Рј РёР·РѕР±СЂР°Р¶РµРЅРёРµ СЃ РєР°РјРµСЂС‹, Рё Р·Р°РѕРґРЅРѕ РЅРµРјРЅРѕРіРѕ СѓРїСЂР°РІР»СЏРµС‚ СЃСЉРµРјРєРѕР№
+//РџСЂРё СЃРѕР·РґР°РЅРёРё СЃРµР±СЏ СЃРѕР·РґР°РµС‚ РєР°РјРµСЂСѓ (С‡РµСЂРµР· РјРµРЅРµРґР¶РµСЂ, РЅРѕРјРµСЂ РєР°РјРµСЂС‹ Р·Р°РґР°РµС‚СЃСЏ РёР·РІРЅРµ) Рё Р·Р°РїСѓСЃРєР°РµС‚ РїСЂРµРІСЊСЋ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.
+//Р—Р°РїРёСЃСЊ Р·Р°РїСѓСЃРєР°РµС‚СЃСЏ РїРѕ Р·Р°РїСЂРѕСЃСѓ.
 public class CapturePreview extends SurfaceView implements
 		SurfaceHolder.Callback
 {
 
 	// private fields *************************
 	
-	//Очевидно
+	//РћС‡РµРІРёРґРЅРѕ
 	private CameraManager manager;
 
-	//Очевидно
+	//РћС‡РµРІРёРґРЅРѕ
 	private SurfaceHolder holder;
 	private int previewWidth = 0;
 	private int previewHeight = 0;
@@ -30,14 +30,14 @@ public class CapturePreview extends SurfaceView implements
 
 	// public events **************************
 	
-	//Вью и камера создана (случается асинхронно)
+	//Р’СЊСЋ Рё РєР°РјРµСЂР° СЃРѕР·РґР°РЅР° (СЃР»СѓС‡Р°РµС‚СЃСЏ Р°СЃРёРЅС…СЂРѕРЅРЅРѕ)
 	public CustomEvent onCreated = new CustomEvent(); 
 	
-	//Прокси ошибок MediaRecorder'a
+	//РџСЂРѕРєСЃРё РѕС€РёР±РѕРє MediaRecorder'a
 	public ParametrizedCustomEvent<Throwable> onVideoCaptureError = new ParametrizedCustomEvent<Throwable>();
 	public ParametrizedCustomEvent<MediaRecorderInfo> onVideoCaptureInfo = new ParametrizedCustomEvent<MediaRecorderInfo>();
 	
-	//Старт-стоп записи (по факту синхронно, но с расчетом на возможную асинхронность)
+	//РЎС‚Р°СЂС‚-СЃС‚РѕРї Р·Р°РїРёСЃРё (РїРѕ С„Р°РєС‚Сѓ СЃРёРЅС…СЂРѕРЅРЅРѕ, РЅРѕ СЃ СЂР°СЃС‡РµС‚РѕРј РЅР° РІРѕР·РјРѕР¶РЅСѓСЋ Р°СЃРёРЅС…СЂРѕРЅРЅРѕСЃС‚СЊ)
 	public CustomEvent onVideoCaptureStarted = new CustomEvent();
 	public CustomEvent onVideoCaptureStopped = new CustomEvent();
 
@@ -48,7 +48,7 @@ public class CapturePreview extends SurfaceView implements
 	CapturePreview(Context context, int cameraNo)
 	{
 		super(context);
-		this.cameraNo = cameraNo; //Сама камера создастся потом, пока нужно только сохранить номер
+		this.cameraNo = cameraNo; //РЎР°РјР° РєР°РјРµСЂР° СЃРѕР·РґР°СЃС‚СЃСЏ РїРѕС‚РѕРј, РїРѕРєР° РЅСѓР¶РЅРѕ С‚РѕР»СЊРєРѕ СЃРѕС…СЂР°РЅРёС‚СЊ РЅРѕРјРµСЂ
 		init();
 	}
 
@@ -56,10 +56,10 @@ public class CapturePreview extends SurfaceView implements
 
 	private void init()
 	{
-		//Создаем менеджера
+		//РЎРѕР·РґР°РµРј РјРµРЅРµРґР¶РµСЂР°
 		manager = new CameraManager();
 
-		//Цепляем прокси событий MediaRecorder'a
+		//Р¦РµРїР»СЏРµРј РїСЂРѕРєСЃРё СЃРѕР±С‹С‚РёР№ MediaRecorder'a
 		manager.onVideoCaptureError
 				.addListener(new ParametrizedCustomEventListener<Throwable>() {
 					@Override
@@ -80,7 +80,7 @@ public class CapturePreview extends SurfaceView implements
 				});
 
 		
-		// Прям вот так стандартно
+		// РџСЂСЏРј РІРѕС‚ С‚Р°Рє СЃС‚Р°РЅРґР°СЂС‚РЅРѕ
 		// Install a SurfaceHolder.Callback so we get notified when the
 		// underlying surface is created and destroyed.
 		holder = getHolder();
@@ -91,7 +91,7 @@ public class CapturePreview extends SurfaceView implements
 
 
 	// SurfaceHolder.Callback implementation *******************
-	// Почти стандартно
+	// РџРѕС‡С‚Рё СЃС‚Р°РЅРґР°СЂС‚РЅРѕ
 
 	public void surfaceCreated(SurfaceHolder holder)
 	{
@@ -99,8 +99,8 @@ public class CapturePreview extends SurfaceView implements
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw.
 
-		//Ммм, кстати, тут должно что-то возвращаться, хотя бы boolean. 
-		//Иначе onCreated файрится, даже если камера не создана
+		//РњРјРј, РєСЃС‚Р°С‚Рё, С‚СѓС‚ РґРѕР»Р¶РЅРѕ С‡С‚Рѕ-С‚Рѕ РІРѕР·РІСЂР°С‰Р°С‚СЊСЃСЏ, С…РѕС‚СЏ Р±С‹ boolean. 
+		//РРЅР°С‡Рµ onCreated С„Р°Р№СЂРёС‚СЃСЏ, РґР°Р¶Рµ РµСЃР»Рё РєР°РјРµСЂР° РЅРµ СЃРѕР·РґР°РЅР°
 		manager.createCamera(cameraNo);
 
 		onCreated.fire();
@@ -116,7 +116,7 @@ public class CapturePreview extends SurfaceView implements
 		// important to release it when the activity is paused.
 		try
 		{
-			//Ай-яй-яй, внутри все-таки нужна проверка на null, иначе несимметрично
+			//РђР№-СЏР№-СЏР№, РІРЅСѓС‚СЂРё РІСЃРµ-С‚Р°РєРё РЅСѓР¶РЅР° РїСЂРѕРІРµСЂРєР° РЅР° null, РёРЅР°С‡Рµ РЅРµСЃРёРјРјРµС‚СЂРёС‡РЅРѕ
 			manager.destroyCamera();
 		}
 		catch (Exception e)
@@ -136,17 +136,17 @@ public class CapturePreview extends SurfaceView implements
 
 		try
 		{
-			//Приостанавливаем превью на всякий случай
-			manager.stopPreview(false); //Обращаю внимание, лок не делается
+			//РџСЂРёРѕСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїСЂРµРІСЊСЋ РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№
+			manager.stopPreview(false); //РћР±СЂР°С‰Р°СЋ РІРЅРёРјР°РЅРёРµ, Р»РѕРє РЅРµ РґРµР»Р°РµС‚СЃСЏ
 			
-			//Выствляем размер
+			//Р’С‹СЃС‚РІР»СЏРµРј СЂР°Р·РјРµСЂ
 			previewWidth = w;
 			previewHeight = h;
 			manager.updateCameraSizeApproximately(holder, previewWidth,
 					previewHeight);
 			
-			//Запускам превью
-			manager.startPreview(false); //Обращаю внимание, лок не делается
+			//Р—Р°РїСѓСЃРєР°Рј РїСЂРµРІСЊСЋ
+			manager.startPreview(false); //РћР±СЂР°С‰Р°СЋ РІРЅРёРјР°РЅРёРµ, Р»РѕРє РЅРµ РґРµР»Р°РµС‚СЃСЏ
 		}
 		catch (Exception e)
 		{
@@ -159,18 +159,18 @@ public class CapturePreview extends SurfaceView implements
 
 	// publics *********************************************
 
-	//Запуск записи видео
+	//Р—Р°РїСѓСЃРє Р·Р°РїРёСЃРё РІРёРґРµРѕ
 	public void startVideoCapture()
 	{
 		try
 		{
-			//Останавливаем превью
-			manager.stopPreview(true); //Лок!
+			//РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїСЂРµРІСЊСЋ
+			manager.stopPreview(true); //Р›РѕРє!
 			
-			//Запускаем запись
+			//Р—Р°РїСѓСЃРєР°РµРј Р·Р°РїРёСЃСЊ
 			File outputFile = manager.startRecording(holder);
 
-			//Делаем тост. Вообще, тост должна делать активити, но было не до того
+			//Р”РµР»Р°РµРј С‚РѕСЃС‚. Р’РѕРѕР±С‰Рµ, С‚РѕСЃС‚ РґРѕР»Р¶РЅР° РґРµР»Р°С‚СЊ Р°РєС‚РёРІРёС‚Рё, РЅРѕ Р±С‹Р»Рѕ РЅРµ РґРѕ С‚РѕРіРѕ
 			// TODO move out of here
 			Toast.makeText(getContext(),
 					"Recording to " + outputFile.getAbsolutePath(),
@@ -181,30 +181,30 @@ public class CapturePreview extends SurfaceView implements
 			Trace.Print(ex);
 			onVideoCaptureError.fire(ex);
 			
-			//Если не получилось, возвращаемся на исходную.
+			//Р•СЃР»Рё РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ, РІРѕР·РІСЂР°С‰Р°РµРјСЃСЏ РЅР° РёСЃС…РѕРґРЅСѓСЋ.
 			manager.stopRecording();
 			manager.startPreview(true);
 			return;
 		}
 
-		//Если получилось, отмечаемся
+		//Р•СЃР»Рё РїРѕР»СѓС‡РёР»РѕСЃСЊ, РѕС‚РјРµС‡Р°РµРјСЃСЏ
 		isRecordingStarted = true;
 		onVideoCaptureStarted.fire();
 	}
 
 
-	//Остановка записи
+	//РћСЃС‚Р°РЅРѕРІРєР° Р·Р°РїРёСЃРё
 	public void stopVideoCapture()
 	{
 		manager.stopRecording();
-		manager.startPreview(true); //Лок!
+		manager.startPreview(true); //Р›РѕРє!
 
 		isRecordingStarted = false;
 		onVideoCaptureStopped.fire();
 	}
 
 
-	//Тривиально
+	//РўСЂРёРІРёР°Р»СЊРЅРѕ
 	public int getMaxCameraNo()
 	{
 		return manager.getMaxCameraNo();
